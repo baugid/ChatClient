@@ -9,9 +9,6 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 
-/**
- * Created by Gideon on 02.08.2017.
- */
 public class MainGui {
 
     private JTextArea output;
