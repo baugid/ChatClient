@@ -17,7 +17,6 @@ public class MainGui {
     private BufferedReader in = null;
     private PrintStream out = null;
     private Thread receiverThread;
-    private boolean running;
 
     private MainGui(Socket soc) {
         this.soc = soc;
@@ -29,9 +28,8 @@ public class MainGui {
             e.printStackTrace();
         }
         name = getName();
-        running = true;
         //receive messages in another thread
-        receiverThread = new Thread(() -> receiveMessages());
+        receiverThread = new Thread(this::receiveMessages);
         receiverThread.start();
         //send message
         send.addActionListener(new ActionListener() {
@@ -97,7 +95,7 @@ public class MainGui {
         MainGui mG = new MainGui(soc);
         JFrame frame = new JFrame("Chat");
         frame.setContentPane(mG.panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         //call the closingHandler on close
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -149,9 +147,9 @@ public class MainGui {
         return null;
     }
 
-    public void receiveMessages() {
+    private void receiveMessages() {
         String message = "";
-        while (running) {
+        while (!receiverThread.isInterrupted()) {
             //try to read a message
             try {
                 message = in.readLine();
@@ -169,8 +167,8 @@ public class MainGui {
     }
 
     public void closingHandler() {
-        if (running) {
-            running = false;
+        if (!receiverThread.isInterrupted()) {
+            receiverThread.interrupt();
             out.println("closing!");
             //close socket and streams
             try {
