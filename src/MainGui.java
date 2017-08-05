@@ -44,7 +44,7 @@ public class MainGui {
         input.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && !input.getText().equals("")) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && input.getText() != null && !input.getText().equals("")) {
                     out.println("[" + name + "]:" + input.getText());
                     input.setText("");
                 }
